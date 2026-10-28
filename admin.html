@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administration — Dëkkal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- =========================================================================
+     EN-TÊTE ADMINISTRATEUR
+     ========================================================================= -->
+<header class="admin-header">
+  <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+      <a class="navbar-brand font-affiche fs-2 text-decoration-none text-light" href="index.html">
+        Dëk<span style="color:var(--laiton); font-style:italic;">kal</span>
+      </a>
+      <span class="badge-role admin">Espace Administrateur</span>
+      <button class="btn btn-action py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-modal-supabase" title="Configuration Supabase">
+        <span id="indicateur-supabase-point" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#ffb74d;"></span>
+        <span id="indicateur-supabase-texte" class="small">Supabase</span>
+      </button>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <a href="index.html" class="btn btn-dekkal-outline py-2 px-3">
+        ← Voir la boutique
+      </a>
+      <div id="zone-admin-user" class="d-none d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+          <div class="small fw-medium" id="admin-user-nom">Administrateur</div>
+          <div class="meta" style="font-size:0.68rem;" id="admin-user-email">admin@dekkal.sn</div>
+        </div>
+        <button id="btn-admin-deconnexion" class="btn btn-action btn-danger-action">
+          Déconnexion
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- =========================================================================
+     ÉCRAN DE CONNEXION ADMIN (Si non authentifié)
+     ========================================================================= -->
+<section id="ecran-auth-admin" class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="carte-panneau">
+        <span class="kicker">Accès réservé</span>
+        <h1 class="fs-2 mt-2 mb-4">Connexion Administrateur</h1>
+
+        <div id="auth-admin-alerte" class="alert alert-danger d-none mb-3"></div>
+
+        <form id="forme-connexion-admin">
+          <div class="mb-3">
+            <label>Email Administrateur</label>
+            <input type="email" id="input-admin-email" class="form-control" placeholder="admin.demo@dekkal.sn" required>
+          </div>
+          <div class="mb-4">
+            <label>Mot de passe</label>
+            <input type="password" id="input-admin-mdp" class="form-control" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-dekkal w-100 mb-3" id="btn-submit-login">
+            Se connecter au tableau de bord
+          </button>
+        </form>
+
+        <div class="border-top pt-3 mt-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="meta" style="font-size:0.72rem;">Compte de démonstration :</span>
+            <button type="button" id="btn-remplir-demo" class="btn btn-action py-1 px-2">
+              Remplir (Démo)
+            </button>
+          </div>
+          <p class="meta mt-2 mb-0" style="font-size:0.72rem;">
+            <code>admin.demo@dekkal.sn</code> / <code>admin123</code>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     INTERFACE PRINCIPALE DU DASHBOARD (Si authentifié)
+     ========================================================================= -->
+<main id="ecran-dashboard-admin" class="d-none pb-5">
+
+  <!-- Navigation par onglets -->
+  <div class="border-bottom" style="background:var(--obsidienne-2);">
+    <div class="container-fluid px-lg-5">
+      <ul class="nav admin-nav" id="admin-onglets" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" data-onglet="tableau-de-bord">
+            📊 Vue d'ensemble
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-onglet="produits">
+            👗 Produits & Catalogue (<span id="compteur-ong-produits">0</span>)
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-onglet="commandes">
+            📦 Commandes (<span id="compteur-ong-commandes">0</span>)
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-onglet="utilisateurs">
+            👥 Utilisateurs (<span id="compteur-ong-utilisateurs">0</span>)
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-fluid px-lg-5 pt-4">
+
+    <!-- ---------------------------------------------------------------------
+         ONGLET 1 : TABLEAU DE BORD (STATS & KPIS)
+         --------------------------------------------------------------------- -->
+    <section id="section-tableau-de-bord" class="section-onglet">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+          <span class="kicker">Statistiques en direct</span>
+          <h1 class="fs-2 mb-0">Tableau de bord</h1>
+        </div>
+        <button id="btn-rafraichir-stats" class="btn btn-action">
+          🔄 Actualiser les données
+        </button>
+      </div>
+
+      <!-- Ligne des Cartes KPI -->
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+          <div class="carte-kpi h-100">
+            <span class="label-kpi">Chiffre d'Affaires</span>
+            <div class="valeur-kpi accent-or" id="kpi-chiffre-affaires">0 FCFA</div>
+            <p class="meta mb-0">Total des ventes enregistrées</p>
+            <span class="icone-kpi">💰</span>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="carte-kpi h-100">
+            <span class="label-kpi">Commandes</span>
+            <div class="valeur-kpi" id="kpi-total-commandes">0</div>
+            <p class="meta mb-0" id="kpi-detail-commandes">0 confirmées / livrées</p>
+            <span class="icone-kpi">📦</span>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="carte-kpi h-100">
+            <span class="label-kpi">Catalogue</span>
+            <div class="valeur-kpi" id="kpi-total-produits">0</div>
+            <p class="meta mb-0" id="kpi-detail-produits">0 disponibles · 0 vendus</p>
+            <span class="icone-kpi">👗</span>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="carte-kpi h-100">
+            <span class="label-kpi">Utilisateurs</span>
+            <div class="valeur-kpi" id="kpi-total-utilisateurs">0</div>
+            <p class="meta mb-0" id="kpi-detail-utilisateurs">0 acheteurs · 0 vendeurs</p>
+            <span class="icone-kpi">👥</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphiques et ventilations -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="carte-panneau h-100">
+            <h3 class="fs-5 mb-3">Répartition par catégorie</h3>
+            <div id="liste-repartition-categories" class="d-flex flex-column gap-3">
+              <p class="meta">Chargement...</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="carte-panneau h-100">
+            <h3 class="fs-5 mb-3">État des commandes</h3>
+            <div id="liste-repartition-statuts-commandes" class="d-flex flex-column gap-3">
+              <p class="meta">Chargement...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activité récente -->
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="carte-panneau h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="fs-5 mb-0">Dernières commandes</h3>
+              <button class="btn btn-action py-1 px-2" data-nav-vers="commandes">Voir tout</button>
+            </div>
+            <div id="zone-dernieres-commandes">
+              <p class="meta">Chargement...</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="carte-panneau h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="fs-5 mb-0">Derniers articles ajoutés</h3>
+              <button class="btn btn-action py-1 px-2" data-nav-vers="produits">Voir tout</button>
+            </div>
+            <div id="zone-derniers-produits">
+              <p class="meta">Chargement...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         ONGLET 2 : GESTION DES PRODUITS
+         --------------------------------------------------------------------- -->
+    <section id="section-produits" class="section-onglet d-none">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+          <span class="kicker">Modération & Catalogue</span>
+          <h1 class="fs-2 mb-0">Gestion des Produits</h1>
+        </div>
+        <button id="btn-nouveau-produit" class="btn btn-dekkal">
+          + Ajouter un produit
+        </button>
+      </div>
+
+      <!-- Filtres Produits -->
+      <div class="carte-panneau py-3 px-4 mb-3">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-4">
+            <input type="text" id="filtre-produits-recherche" class="form-control" placeholder="Rechercher par titre ou description…">
+          </div>
+          <div class="col-md-3">
+            <select id="filtre-produits-categorie" class="form-select">
+              <option value="">Toutes les catégories</option>
+              <option>Robes</option>
+              <option>Hauts</option>
+              <option>Pantalons</option>
+              <option>Ensembles</option>
+              <option>Chaussures</option>
+              <option>Accessoires</option>
+              <option>Boubous &amp; Tenues traditionnelles</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select id="filtre-produits-statut" class="form-select">
+              <option value="">Tous les statuts</option>
+              <option value="disponible">Disponible</option>
+              <option value="réservé">Réservé</option>
+              <option value="vendu">Vendu</option>
+            </select>
+          </div>
+          <div class="col-md-2 text-end">
+            <button id="btn-reinitialiser-filtres-produits" class="btn btn-action w-100">
+              Effacer filtres
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table des Produits -->
+      <div class="table-admin-container">
+        <table class="table-admin">
+          <thead>
+            <tr>
+              <th>Article</th>
+              <th>Catégorie</th>
+              <th>Taille / État</th>
+              <th>Prix (FCFA)</th>
+              <th>Vendeur / Ville</th>
+              <th>Statut</th>
+              <th>Vues</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-produits">
+            <tr><td colspan="8" class="text-center py-4 meta">Chargement des produits…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         ONGLET 3 : GESTION DES COMMANDES
+         --------------------------------------------------------------------- -->
+    <section id="section-commandes" class="section-onglet d-none">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+          <span class="kicker">Suivi des Ventes</span>
+          <h1 class="fs-2 mb-0">Gestion des Commandes</h1>
+        </div>
+      </div>
+
+      <!-- Filtres Commandes -->
+      <div class="carte-panneau py-3 px-4 mb-3">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-4">
+            <select id="filtre-commandes-statut" class="form-select">
+              <option value="">Tous les statuts de commande</option>
+              <option value="en attente">En attente</option>
+              <option value="confirmée">Confirmée</option>
+              <option value="expédiée">Expédiée</option>
+              <option value="livrée">Livrée</option>
+              <option value="annulée">Annulée</option>
+            </select>
+          </div>
+          <div class="col-md-8 text-end">
+            <button id="btn-rafraichir-commandes" class="btn btn-action">
+              🔄 Rafraîchir les commandes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table des Commandes -->
+      <div class="table-admin-container">
+        <table class="table-admin">
+          <thead>
+            <tr>
+              <th>Réf / Date</th>
+              <th>Client</th>
+              <th>Articles</th>
+              <th>Total (FCFA)</th>
+              <th>Paiement</th>
+              <th>Statut (Modifier)</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-commandes">
+            <tr><td colspan="7" class="text-center py-4 meta">Chargement des commandes…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         ONGLET 4 : GESTION DES UTILISATEURS
+         --------------------------------------------------------------------- -->
+    <section id="section-utilisateurs" class="section-onglet d-none">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+          <span class="kicker">Membres & Permissions</span>
+          <h1 class="fs-2 mb-0">Gestion des Utilisateurs</h1>
+        </div>
+      </div>
+
+      <!-- Table des Utilisateurs -->
+      <div class="table-admin-container">
+        <table class="table-admin">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Ville</th>
+              <th>Téléphone</th>
+              <th>Rôle Actuel</th>
+              <th>Modifier Rôle</th>
+              <th>Date d'inscription</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-utilisateurs">
+            <tr><td colspan="8" class="text-center py-4 meta">Chargement des utilisateurs…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- =========================================================================
+     MODALES D'ADMINISTRATION
+     ========================================================================= -->
+
+<!-- Modale Produit (Création & Édition) -->
+<div class="modal fade" id="modal-produit" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content modal-dekkal">
+      <div class="modal-header">
+        <h5 class="modal-title font-affiche fs-4" id="modal-produit-titre">Ajouter un produit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <form id="forme-modal-produit">
+        <input type="hidden" id="modal-produit-id">
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label>Titre de l'article *</label>
+              <input type="text" id="modal-produit-nom" class="form-control" placeholder="ex: Robe wax imprimée" required>
+            </div>
+            <div class="col-md-4">
+              <label>Catégorie *</label>
+              <select id="modal-produit-categorie" class="form-select" required>
+                <option>Robes</option>
+                <option>Hauts</option>
+                <option>Pantalons</option>
+                <option>Ensembles</option>
+                <option>Chaussures</option>
+                <option>Accessoires</option>
+                <option>Boubous &amp; Tenues traditionnelles</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label>Taille *</label>
+              <input type="text" id="modal-produit-taille" class="form-control" placeholder="M, 38, 42, Unique..." required>
+            </div>
+            <div class="col-md-4">
+              <label>État *</label>
+              <select id="modal-produit-etat" class="form-select" required>
+                <option>Neuf avec étiquette</option>
+                <option selected>Très bon état</option>
+                <option>Bon état</option>
+                <option>Satisfaisant</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label>Statut *</label>
+              <select id="modal-produit-statut" class="form-select" required>
+                <option value="disponible">Disponible</option>
+                <option value="réservé">Réservé</option>
+                <option value="vendu">Vendu</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label>Prix de vente (FCFA) *</label>
+              <input type="number" id="modal-produit-prix" class="form-control" placeholder="8500" min="0" required>
+            </div>
+            <div class="col-md-6">
+              <label>Prix d'origine / estimé neuf (FCFA)</label>
+              <input type="number" id="modal-produit-prix-original" class="form-control" placeholder="15000" min="0">
+            </div>
+            <div class="col-md-6">
+              <label>Couleur</label>
+              <input type="text" id="modal-produit-couleur" class="form-control" placeholder="Orange, Bleu nuit...">
+            </div>
+            <div class="col-md-6">
+              <label>Ville</label>
+              <input type="text" id="modal-produit-ville" class="form-control" placeholder="Dakar, Saint-Louis...">
+            </div>
+            <div class="col-12">
+              <label>URL de l'image</label>
+              <input type="url" id="modal-produit-image" class="form-control" placeholder="https://images.unsplash.com/...">
+            </div>
+            <div class="col-12">
+              <label>Description détaillée</label>
+              <textarea id="modal-produit-description" class="form-control" rows="3" placeholder="Détails sur la coupe, la matière, l'usure éventuelle..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-action" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-dekkal" id="btn-enregistrer-produit">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modale Détail Commande -->
+<div class="modal fade" id="modal-commande-detail" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content modal-dekkal">
+      <div class="modal-header">
+        <h5 class="modal-title font-affiche fs-4">Détails de la commande</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body p-4" id="modal-commande-corps">
+        <p class="meta">Chargement...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-action" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale Configuration Supabase -->
+<div class="modal fade" id="modal-config-supabase" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content modal-dekkal">
+      <div class="modal-header">
+        <h5 class="modal-title font-affiche fs-4">Configuration Supabase</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <form id="forme-config-supabase">
+        <div class="modal-body p-4">
+          <p class="meta small mb-3">
+            Liez votre projet Supabase en renseignant les clés API ci-dessous. Les données seront directement lues et écrites sur votre base PostgreSQL Supabase.
+          </p>
+          <div class="mb-3">
+            <label>Supabase URL</label>
+            <input type="url" id="config-supabase-url" class="form-control" placeholder="https://xyzcompany.supabase.co">
+          </div>
+          <div class="mb-3">
+            <label>Supabase Anon Key</label>
+            <input type="text" id="config-supabase-key" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <button type="button" id="btn-reinitialiser-demo-mode" class="btn btn-action py-1 px-2 text-warning">
+              Revenir au mode Démo local
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-action" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-dekkal">Enregistrer la configuration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Conteneur des Toasts -->
+<div class="toast-dekkal-container" id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

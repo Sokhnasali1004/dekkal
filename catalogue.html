@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue — Dëkkal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dekkal sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Dëk<span>kal</span></a>
+    <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#nav-principale">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav-principale">
+      <ul class="navbar-nav mx-auto gap-lg-3">
+        <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+        <li class="nav-item"><a class="nav-link active" href="catalogue.html">Catalogue</a></li>
+        <li class="nav-item"><a class="nav-link" href="panier.html">Panier <span class="badge-panier" data-badge-panier>0</span></a></li>
+      </ul>
+      <div data-zone-compte></div>
+    </div>
+  </div>
+</nav>
+
+<section class="container py-4">
+  <h1 class="fs-2">Catalogue</h1>
+
+  <form id="forme-filtres" class="row g-2 align-items-end carte-panneau mb-3">
+    <div class="col-md-3">
+      <label>Recherche</label>
+      <input type="text" name="recherche" class="form-control" placeholder="Robe, boubou, sneakers…">
+    </div>
+    <div class="col-md-2">
+      <label>Catégorie</label>
+      <select name="categorie" class="form-select">
+        <option value="">Toutes</option>
+        <option>Robes</option>
+        <option>Hauts</option>
+        <option>Pantalons</option>
+        <option>Ensembles</option>
+        <option>Chaussures</option>
+        <option>Accessoires</option>
+        <option>Boubous &amp; Tenues traditionnelles</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label>État</label>
+      <select name="etat" class="form-select">
+        <option value="">Tous</option>
+        <option>Neuf avec étiquette</option>
+        <option>Très bon état</option>
+        <option>Bon état</option>
+        <option>Satisfaisant</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label>Prix max (FCFA)</label>
+      <input type="number" name="prixMax" class="form-control" placeholder="20000">
+    </div>
+    <div class="col-md-2">
+      <label>Trier par</label>
+      <select name="tri" class="form-select">
+        <option value="recent">Plus récent</option>
+        <option value="prix_asc">Prix croissant</option>
+        <option value="prix_desc">Prix décroissant</option>
+      </select>
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-dekkal w-100">OK</button>
+    </div>
+  </form>
+
+  <div class="d-flex gap-2 overflow-auto pb-2 mb-2">
+    <button type="button" class="chip-categorie active" data-categorie="">Toutes</button>
+    <button type="button" class="chip-categorie" data-categorie="Robes">Robes</button>
+    <button type="button" class="chip-categorie" data-categorie="Hauts">Hauts</button>
+    <button type="button" class="chip-categorie" data-categorie="Pantalons">Pantalons</button>
+    <button type="button" class="chip-categorie" data-categorie="Chaussures">Chaussures</button>
+    <button type="button" class="chip-categorie" data-categorie="Accessoires">Accessoires</button>
+  </div>
+
+  <p id="compteur-resultats" class="meta mb-3"></p>
+  <div id="grille-produits" class="row g-3"></div>
+</section>
+
+<footer class="footer-dekkal mt-5">
+  <div class="container text-center">
+    <p class="small mb-0">© Dëkkal — marketplace sénégalaise de vêtements de seconde main.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="js/main.js"></script>
+<script type="module" src="js/catalogue.js"></script>
+</body>
+</html>

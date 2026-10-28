@@ -1,0 +1,613 @@
+/* =========================================================
+   DËKKAL — direction "boutique de consignation" élégante
+   Fond obsidienne chaude, laiton antique, bordeaux profond
+   ========================================================= */
+:root{
+  --obsidienne:   #131110;   /* fond principal, noir chaud */
+  --obsidienne-2: #1B1816;   /* surfaces légèrement surélevées */
+  --obsidienne-3: #221E1B;
+  --ivoire:       #EEE7DA;   /* texte principal sur fond sombre */
+  --ivoire-att:   #A79E90;   /* texte atténué */
+  --laiton:       #C7A15B;   /* accent principal — fil doré */
+  --laiton-clair: #E4C888;
+  --bordeaux:     #5B2A32;   /* accent secondaire — teinture profonde */
+  --ligne:        rgba(238,231,218,0.12);
+
+  --police-affiche: 'Cormorant Garamond', 'Georgia', serif;
+  --police-texte:   'Jost', -apple-system, sans-serif;
+  --police-detail:  'Jost', sans-serif;
+
+  --rayon: 1px;
+  --ombre: 0 24px 60px rgba(0,0,0,0.45);
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family: var(--police-texte);
+  font-weight: 300;
+  color: var(--ivoire);
+  background: var(--obsidienne);
+  letter-spacing: .01em;
+}
+
+h1,h2,h3,.font-affiche{
+  font-family: var(--police-affiche);
+  font-weight: 500;
+  letter-spacing: .01em;
+  text-transform: none;
+  color: var(--ivoire);
+}
+
+p{ color: var(--ivoire-att); font-weight: 300; }
+
+a{ color: var(--laiton); text-decoration:none; }
+a:hover{ color: var(--laiton-clair); }
+:focus-visible{ outline: 1.5px solid var(--laiton); outline-offset: 3px; }
+
+.kicker{
+  font-family: var(--police-detail);
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  font-size: .72rem;
+  color: var(--laiton);
+  font-weight: 500;
+}
+
+.filet-or{
+  width: 64px;
+  height: 1px;
+  background: var(--laiton);
+  border: none;
+  margin: 1.1rem 0;
+}
+
+/* ---------- Navbar ---------- */
+.navbar-dekkal{
+  background: var(--obsidienne);
+  border-bottom: 1px solid var(--ligne);
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+}
+.navbar-dekkal .navbar-brand{
+  font-family: var(--police-affiche);
+  font-size: 2.1rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--ivoire) !important;
+}
+.navbar-dekkal .navbar-brand span{ color: var(--laiton); font-style: italic; }
+.navbar-dekkal .nav-link{
+  color: var(--ivoire-att) !important;
+  font-weight: 400;
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  padding: .4rem .9rem !important;
+  position: relative;
+}
+.navbar-dekkal .nav-link:hover, .navbar-dekkal .nav-link.active{ color: var(--ivoire) !important; }
+.navbar-dekkal .nav-link.active::after{
+  content:"";
+  position:absolute; left:.9rem; right:.9rem; bottom:0;
+  height:1px; background: var(--laiton);
+}
+.navbar-toggler{ border-color: var(--ligne) !important; }
+
+.badge-panier{
+  background: transparent;
+  border: 1px solid var(--laiton);
+  color: var(--laiton);
+  border-radius: 50%;
+  font-family: var(--police-detail);
+  font-size: .65rem;
+  min-width: 18px;
+  height: 18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  top:-8px;
+  margin-left: 2px;
+}
+
+/* ---------- Hero ---------- */
+.hero-dekkal{
+  background: var(--obsidienne);
+  color: var(--ivoire);
+  padding: 7rem 0 6rem;
+  position: relative;
+  border-bottom: 1px solid var(--ligne);
+}
+.hero-dekkal h1{
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  line-height: 1.02;
+  font-weight: 500;
+}
+.hero-dekkal .accent{ color: var(--laiton); font-style: italic; }
+.hero-stamp{
+  display:inline-block;
+  color: var(--laiton);
+  font-family: var(--police-detail);
+  text-transform: uppercase;
+  font-size: .72rem;
+  letter-spacing: .3em;
+  font-weight: 500;
+}
+
+/* ---------- Boutons ---------- */
+.btn-dekkal{
+  background: transparent;
+  border: 1px solid var(--laiton);
+  color: var(--laiton);
+  font-family: var(--police-detail);
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-weight: 500;
+  font-size: .74rem;
+  border-radius: var(--rayon);
+  padding: .85rem 2rem;
+  transition: all .25s ease;
+}
+.btn-dekkal:hover{ background: var(--laiton); border-color: var(--laiton); color: var(--obsidienne); }
+.btn-dekkal-outline{
+  background: transparent;
+  border: 1px solid var(--ligne);
+  color: var(--ivoire);
+  font-family: var(--police-detail);
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-weight: 500;
+  font-size: .74rem;
+  border-radius: var(--rayon);
+  padding: .8rem 1.8rem;
+}
+.btn-dekkal-outline:hover{ border-color: var(--laiton); color: var(--laiton); }
+
+/* ---------- Carte produit "planche éditoriale" (signature) ---------- */
+.carte-etiquette{
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  position: relative;
+  transition: opacity .25s ease;
+  overflow: visible;
+}
+.carte-etiquette:hover{ opacity: .82; }
+.carte-etiquette::before{ content: none; }
+.carte-etiquette .zone-image{
+  aspect-ratio: 3/4;
+  background: var(--obsidienne-2);
+  border: 1px solid var(--ligne);
+  display:flex; align-items:center; justify-content:center;
+  color: var(--ivoire-att);
+  font-family: var(--police-affiche);
+  font-style: italic;
+  font-size: 1.15rem;
+  position: relative;
+  overflow: hidden;
+}
+.tampon-etat{
+  position:absolute; left:0; bottom:0;
+  background: var(--obsidienne);
+  color: var(--laiton);
+  font-family: var(--police-detail);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  padding: .35rem .6rem;
+  border-radius: 0;
+  transform: none;
+  box-shadow: none;
+  border-top: 1px solid var(--ligne);
+  border-right: 1px solid var(--ligne);
+}
+.carte-etiquette .corps{ padding: 1.1rem 0 .3rem; }
+.carte-etiquette .prix{
+  font-family: var(--police-affiche);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--laiton);
+  font-size: 1.25rem;
+}
+.carte-etiquette .prix-original{
+  font-family: var(--police-detail);
+  color: var(--ivoire-att);
+  text-decoration: line-through;
+  font-size: .78rem;
+  margin-left: .5rem;
+}
+.carte-etiquette .titre{
+  font-family: var(--police-texte);
+  font-weight: 400;
+  color: var(--ivoire);
+  font-size: .98rem;
+  margin-top: .15rem;
+}
+.carte-etiquette .meta{
+  font-family: var(--police-detail);
+  font-size: .68rem;
+  color: var(--ivoire-att);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+/* ---------- Sections / bandeaux ---------- */
+.bandeau-categories{ background: var(--obsidienne); border-top: 1px solid var(--ligne); border-bottom: 1px solid var(--ligne); }
+.chip-categorie{
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: var(--ivoire-att);
+  border-radius: 0;
+  padding: .5rem .2rem;
+  font-family: var(--police-detail);
+  font-size: .74rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: transparent;
+}
+.chip-categorie.active, .chip-categorie:hover{ color: var(--laiton); border-bottom-color: var(--laiton); }
+
+.footer-dekkal{
+  background: var(--obsidienne);
+  color: var(--ivoire-att);
+  border-top: 1px solid var(--ligne);
+  padding: 3.5rem 0 2rem;
+}
+.footer-dekkal a{ color: var(--laiton); }
+
+/* ---------- Formulaires ---------- */
+.form-control, .form-select{
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--ligne);
+  background: transparent;
+  color: var(--ivoire);
+  padding-left: .1rem;
+}
+.form-control::placeholder{ color: var(--ivoire-att); opacity:.6; }
+.form-control:focus, .form-select:focus{
+  background: transparent;
+  color: var(--ivoire);
+  border-color: var(--laiton);
+  box-shadow: none;
+}
+.form-select option{ background: var(--obsidienne-2); color: var(--ivoire); }
+label{ font-family: var(--police-detail); font-size: .7rem; text-transform: uppercase; letter-spacing:.16em; color: var(--ivoire-att); }
+
+.carte-panneau{
+  background: var(--obsidienne-2);
+  border: 1px solid var(--ligne);
+  border-radius: 0;
+  padding: 2.2rem;
+  box-shadow: none;
+}
+
+.alert{ border-radius:0; }
+
+/* =========================================================
+   ESPACE ADMINISTRATEUR (DASHBOARD & TABLES)
+   ========================================================= */
+
+.admin-header{
+  background: var(--obsidienne-2);
+  border-bottom: 1px solid var(--ligne);
+  padding: 1.2rem 0;
+}
+
+.admin-nav .nav-link{
+  color: var(--ivoire-att);
+  font-family: var(--police-detail);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: .78rem;
+  padding: .75rem 1.4rem;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  transition: all .2s ease;
+}
+
+.admin-nav .nav-link:hover{
+  color: var(--ivoire);
+  border-bottom-color: rgba(199, 161, 91, 0.4);
+}
+
+.admin-nav .nav-link.active{
+  color: var(--laiton);
+  background: transparent;
+  border-bottom-color: var(--laiton);
+  font-weight: 500;
+}
+
+/* Cartes KPI */
+.carte-kpi{
+  background: var(--obsidienne-2);
+  border: 1px solid var(--ligne);
+  padding: 1.6rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .25s ease, transform .25s ease;
+}
+
+.carte-kpi:hover{
+  border-color: rgba(199, 161, 91, 0.4);
+  transform: translateY(-2px);
+}
+
+.carte-kpi .valeur-kpi{
+  font-family: var(--police-affiche);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--ivoire);
+  line-height: 1.1;
+  margin: .4rem 0;
+}
+
+.carte-kpi .valeur-kpi.accent-or{
+  color: var(--laiton-clair);
+}
+
+.carte-kpi .label-kpi{
+  font-family: var(--police-detail);
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  color: var(--ivoire-att);
+}
+
+.carte-kpi .icone-kpi{
+  position: absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  font-size: 1.8rem;
+  opacity: .25;
+  color: var(--laiton);
+}
+
+/* Badges de statut */
+.badge-statut{
+  font-family: var(--police-detail);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  padding: .32rem .65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-weight: 500;
+  border-radius: 0;
+}
+
+.badge-statut::before{
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.badge-statut.disponible{
+  background: rgba(46, 125, 50, 0.15);
+  color: #81c784;
+  border: 1px solid rgba(129, 199, 132, 0.3);
+}
+.badge-statut.disponible::before{ background: #81c784; }
+
+.badge-statut.reserve{
+  background: rgba(230, 81, 0, 0.15);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 183, 77, 0.3);
+}
+.badge-statut.reserve::before{ background: #ffb74d; }
+
+.badge-statut.vendu{
+  background: rgba(97, 97, 97, 0.2);
+  color: #bdbdbd;
+  border: 1px solid rgba(189, 189, 189, 0.3);
+}
+.badge-statut.vendu::before{ background: #9e9e9e; }
+
+.badge-statut.attente{
+  background: rgba(255, 152, 0, 0.15);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 183, 77, 0.3);
+}
+.badge-statut.attente::before{ background: #ffa726; }
+
+.badge-statut.confirmee{
+  background: rgba(33, 150, 243, 0.15);
+  color: #64b5f6;
+  border: 1px solid rgba(100, 181, 246, 0.3);
+}
+.badge-statut.confirmee::before{ background: #42a5f5; }
+
+.badge-statut.expediee{
+  background: rgba(156, 39, 176, 0.15);
+  color: #ba68c8;
+  border: 1px solid rgba(186, 104, 200, 0.3);
+}
+.badge-statut.expediee::before{ background: #ab47bc; }
+
+.badge-statut.livree{
+  background: rgba(46, 125, 50, 0.2);
+  color: #81c784;
+  border: 1px solid rgba(129, 199, 132, 0.4);
+}
+.badge-statut.livree::before{ background: #66bb6a; }
+
+.badge-statut.annulee{
+  background: rgba(211, 47, 47, 0.15);
+  color: #e57373;
+  border: 1px solid rgba(229, 115, 115, 0.3);
+}
+.badge-statut.annulee::before{ background: #ef5350; }
+
+/* Badges de rôle */
+.badge-role{
+  font-family: var(--police-detail);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  padding: .28rem .6rem;
+}
+.badge-role.admin{
+  background: rgba(199, 161, 91, 0.2);
+  color: var(--laiton-clair);
+  border: 1px solid var(--laiton);
+}
+.badge-role.vendeur{
+  background: rgba(120, 144, 156, 0.2);
+  color: #b0bec5;
+  border: 1px solid rgba(176, 190, 197, 0.3);
+}
+.badge-role.acheteur{
+  background: transparent;
+  color: var(--ivoire-att);
+  border: 1px solid var(--ligne);
+}
+
+/* Tables Admin */
+.table-admin-container{
+  background: var(--obsidienne-2);
+  border: 1px solid var(--ligne);
+  overflow-x: auto;
+}
+
+.table-admin{
+  width: 100%;
+  color: var(--ivoire);
+  margin-bottom: 0;
+  border-collapse: collapse;
+}
+
+.table-admin th{
+  font-family: var(--police-detail);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--ivoire-att);
+  padding: 1.1rem 1.2rem;
+  border-bottom: 1px solid var(--ligne);
+  background: rgba(255,255,255,0.02);
+  white-space: nowrap;
+}
+
+.table-admin td{
+  padding: 1.1rem 1.2rem;
+  border-bottom: 1px solid rgba(238, 231, 218, 0.06);
+  vertical-align: middle;
+  font-size: .88rem;
+  color: var(--ivoire);
+}
+
+.table-admin tbody tr:hover{
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.table-admin .miniature-produit{
+  width: 44px;
+  height: 52px;
+  object-fit: cover;
+  background: var(--obsidienne-3);
+  border: 1px solid var(--ligne);
+}
+
+/* Boutons d'action miniatures */
+.btn-action{
+  background: transparent;
+  border: 1px solid var(--ligne);
+  color: var(--ivoire-att);
+  padding: .35rem .75rem;
+  font-size: .72rem;
+  font-family: var(--police-detail);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  transition: all .2s ease;
+}
+.btn-action:hover{
+  border-color: var(--laiton);
+  color: var(--laiton);
+}
+.btn-action.btn-danger-action:hover{
+  border-color: #ef5350;
+  color: #ef5350;
+}
+
+/* Modales Admin */
+.modal-content.modal-dekkal{
+  background: var(--obsidienne-2);
+  border: 1px solid var(--ligne);
+  border-radius: 0;
+  color: var(--ivoire);
+}
+
+.modal-content.modal-dekkal .modal-header{
+  border-bottom: 1px solid var(--ligne);
+  padding: 1.5rem 1.8rem;
+}
+
+.modal-content.modal-dekkal .modal-footer{
+  border-top: 1px solid var(--ligne);
+  padding: 1.2rem 1.8rem;
+}
+
+.modal-content.modal-dekkal .btn-close{
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Barre de progression / répartition */
+.barre-progression{
+  height: 8px;
+  background: var(--obsidienne-3);
+  overflow: hidden;
+  display: flex;
+}
+.barre-progression .segment{
+  height: 100%;
+}
+
+/* Toast de notification */
+.toast-dekkal-container{
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.toast-dekkal{
+  background: var(--obsidienne-2);
+  border: 1px solid var(--ligne);
+  color: var(--ivoire);
+  padding: .9rem 1.3rem;
+  min-width: 280px;
+  max-width: 400px;
+  font-size: .85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: slideInRight .3s ease;
+}
+
+.toast-dekkal.succes{
+  border-left: 3px solid #81c784;
+}
+.toast-dekkal.erreur{
+  border-left: 3px solid #ef5350;
+}
+.toast-dekkal.info{
+  border-left: 3px solid var(--laiton);
+}
+
+@keyframes slideInRight{
+  from{ transform: translateX(100%); opacity: 0; }
+  to{ transform: translateX(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+}
